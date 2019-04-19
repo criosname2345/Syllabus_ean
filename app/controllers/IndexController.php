@@ -14,6 +14,7 @@ class IndexController extends ControllerBase
     private function _registerSession($usuario,$token)
     {
         $this->session->set(
+            // $usuario->correo,
             'usuario',
             [
                 'id'          => $usuario->idUsuario,
@@ -127,7 +128,7 @@ class IndexController extends ControllerBase
             return $response;
          }
          $json = $this->request->getJsonRawBody();  
-         if (!$this->validar_logueo($json->token)){
+         if (!$this->validar_logueo($json->correo , $json->token)){
             // Cambiar el HTTP status
             $response->setStatusCode(409, 'Conflict');
             $response->setJsonContent(
@@ -148,7 +149,8 @@ class IndexController extends ControllerBase
         return $response;     
     }
 
-    public function salir(){
+    // public function salir($usuario) {
+    public function salir() {
         // Crear una respuesta
         $response = new Response();       
 
