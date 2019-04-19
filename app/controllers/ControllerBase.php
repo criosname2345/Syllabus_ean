@@ -11,7 +11,7 @@ class ControllerBase extends Controller
         $usuario = $this->session->get('usuario');
 
         if (isset($usuario)) {  
-            if ($this->security->checkToken($token)) {
+            if ( $usuario['token'] === $token ) {
                 $respuesta = true;
             };                     
         }
@@ -24,6 +24,13 @@ class ControllerBase extends Controller
 
         return $respuesta;
 
-    }    
+    }
+    
+    public function obt_permisos(){
+        $usuario = $this->session->get('usuario');
+        $permisos = ean\cc\Permiso::find(['idRol = :Rol:',
+        'bind' => [ 'Rol' => $usuario['rol'] ],]);
+        return $permisos;
+    }
 
 }

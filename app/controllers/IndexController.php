@@ -82,11 +82,11 @@ class IndexController extends ControllerBase
                     }
                 }
 
-                $token = $this->security->getTokenKey();
+                $token = $this->security->getToken();
                 $this->_registerSession($usuario , $token);
                 $response->setJsonContent(
                     [
-                        'status'   => $idSesionAut,
+                        'status'   => 'OK',
                         'messages' => 'Usuario autenticado',
                         'usuario'  => $usuario,
                         'token'    => $token,
@@ -111,6 +111,41 @@ class IndexController extends ControllerBase
 
         }
 
+    }
+
+    public function obtener_permisos( ){
+         // Crear una respuesta
+         $response = new Response();
+         if ( ! $this->request->isPost()) {
+            $response->setStatusCode(409, 'Conflict');
+            $response->setJsonContent(
+                [
+                    'status'   => 'ERROR',
+                    'messages' => 'Servicio no es post',
+                ]
+            );
+            return $response;
+         }
+         $json = $this->request->getJsonRawBody();  
+         if (!$this->validar_logueo($json->token)){
+            // Cambiar el HTTP status
+            $response->setStatusCode(409, 'Conflict');
+            $response->setJsonContent(
+                [
+                    'status'   => 'ERROR',
+                    'messages' => 'Usuario no ha sido autenticado',
+                ]
+            );
+            return $response;
+        } 
+        $permisos = $this->obt_permisos();
+        $response->setJsonContent(
+            [
+                'status'   => 'OK',
+                'permisos' => $permisos,
+            ]
+        );
+        return $response;     
     }
 
     public function salir(){

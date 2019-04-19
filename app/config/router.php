@@ -11,5 +11,6 @@ $Inicio->setPrefix('/api/index');
 // Usa el método 'obtener' en IndexController
 $Inicio->post('/aut', 'autenticar');
 $Inicio->get('/salir', 'salir');
+$Inicio->post('/obt_permisos', 'obtener_permisos');
 
 $app->mount($Inicio);
