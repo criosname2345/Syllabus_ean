@@ -71,5 +71,32 @@ class AdministracionController extends ControllerBase
         
     }
 
+    public function listar_jerarquia(){
+         // Crear una respuesta
+         $response = new Response();
+         if ( ! $this->request->isPost()) {
+            $response->setStatusCode(409, 'Conflict');
+            $response->setJsonContent(
+                [
+                    'status'   => 'ERROR',
+                    'messages' => 'Servicio no es post',
+                ]
+            );
+            return $response;
+         }
+         $json = $this->request->getJsonRawBody();  
+         if (!$this->validar_logueo($json->correo , $json->token)){
+            // Cambiar el HTTP status
+            $response->setStatusCode(409, 'Conflict');
+            $response->setJsonContent(
+                [
+                    'status'   => 'ERROR',
+                    'messages' => 'Usuario no ha sido autenticado',
+                ]
+            );
+            return $response;
+        }        
+    }
+
 }
 
