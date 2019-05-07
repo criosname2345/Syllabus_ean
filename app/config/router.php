@@ -21,7 +21,7 @@ $Administracion = new MicroCollection();
 $Administracion->setHandler('AdministracionController', true);
 $Administracion->setPrefix('/admin');
 $Administracion->post('/c_jerarquia', 'crear_jerarquia');
-$Administracion->post('/l_jerarquia', 'listar_jerarquia');
+$Administracion->post('/l_jerarquia', 'listar_jerarquias');
 // $Administracion->post('/listar', 'listar_Administracion');
 // $Administracion->post('/crear', 'crear_visita');
 // $Administracion->post('/categorias', 'listar_categorias');

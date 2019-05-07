@@ -30,6 +30,12 @@ class Jerarquia extends \Phalcon\Mvc\Model
     protected $jerarquiaSuperior;
 
     /**
+     *
+     * @var string
+     */
+    protected $eliminado;
+
+    /**
      * Method to set the value of field idJerarquia
      *
      * @param integer $idJerarquia
@@ -82,6 +88,19 @@ class Jerarquia extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Method to set the value of field eliminado
+     *
+     * @param string $eliminado
+     * @return $this
+     */
+    public function setEliminado($eliminado)
+    {
+        $this->eliminado = $eliminado;
+
+        return $this;
+    }
+
+    /**
      * Returns the value of field idJerarquia
      *
      * @return integer
@@ -119,6 +138,16 @@ class Jerarquia extends \Phalcon\Mvc\Model
     public function getJerarquiaSuperior()
     {
         return $this->jerarquiaSuperior;
+    }
+
+    /**
+     * Returns the value of field eliminado
+     *
+     * @return string
+     */
+    public function getEliminado()
+    {
+        return $this->eliminado;
     }
 
     /**
@@ -179,7 +208,8 @@ class Jerarquia extends \Phalcon\Mvc\Model
             'idJerarquia' => 'idJerarquia',
             'nombre' => 'nombre',
             'tipo' => 'tipo',
-            'jerarquiaSuperior' => 'jerarquiaSuperior'
+            'jerarquiaSuperior' => 'jerarquiaSuperior',
+            'eliminado' => 'eliminado'
         ];
     }
 

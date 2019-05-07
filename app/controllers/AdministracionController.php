@@ -71,7 +71,7 @@ class AdministracionController extends ControllerBase
         
     }
 
-    public function listar_jerarquia(){
+    public function listar_jerarquias(){
          // Crear una respuesta
          $response = new Response();
          if ( ! $this->request->isPost()) {
@@ -95,7 +95,30 @@ class AdministracionController extends ControllerBase
                 ]
             );
             return $response;
-        }        
+        }
+
+        $usuario = $this->session->get('usuario');
+        $jerarquia = ean\cc\Jerarquia::find(['idJerarquia = :Jerarquia:',
+        'bind' => [ 'Jerarquia' => $usuario['idJerarquia'] ],]);
+
+        $rp_jerarquias = array();
+
+        if( $jerarquia->jerarquiaSuperior == null ){
+            $rp_jerarquias = ean\cc\Jerarquia::find( );
+        }else{
+            $rp_jerarquias = ean\cc\Jerarquia::find(['jerarquiaSuperior = :Jerarquia:',
+            'bind' => [ 'Jerarquia' => $jerarquia->idJerarquia ],]);
+        }
+
+        $response->setJsonContent(
+            [
+                'status'   => 'OK',
+                'messages' => 'Jerarquias del usuario',
+                'jerarquias' => $rp_jerarquias ,
+            ]
+        );
+        return $response;
+
     }
 
 }

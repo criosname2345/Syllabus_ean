@@ -60,6 +60,12 @@ class Unidad extends \Phalcon\Mvc\Model
     protected $idSyllabusCab;
 
     /**
+     *
+     * @var string
+     */
+    protected $eliminado;
+
+    /**
      * Method to set the value of field idUnidad
      *
      * @param integer $idUnidad
@@ -177,6 +183,19 @@ class Unidad extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Method to set the value of field eliminado
+     *
+     * @param string $eliminado
+     * @return $this
+     */
+    public function setEliminado($eliminado)
+    {
+        $this->eliminado = $eliminado;
+
+        return $this;
+    }
+
+    /**
      * Returns the value of field idUnidad
      *
      * @return integer
@@ -267,6 +286,16 @@ class Unidad extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Returns the value of field eliminado
+     *
+     * @return string
+     */
+    public function getEliminado()
+    {
+        return $this->eliminado;
+    }
+
+    /**
      * Initialize method for model.
      */
     public function initialize()
@@ -327,7 +356,8 @@ class Unidad extends \Phalcon\Mvc\Model
             'nivel' => 'nivel',
             'codigosSap' => 'codigosSap',
             'idJerarquia' => 'idJerarquia',
-            'idSyllabusCab' => 'idSyllabusCab'
+            'idSyllabusCab' => 'idSyllabusCab',
+            'eliminado' => 'eliminado'
         ];
     }
 
