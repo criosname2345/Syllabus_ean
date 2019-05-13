@@ -121,5 +121,211 @@ class AdministracionController extends ControllerBase
 
     }
 
+    public function modificar_jerarquia(){
+        // Crear una respuesta
+        $response = new Response();
+        if ( ! $this->request->isPost()) {
+           $response->setStatusCode(409, 'Conflict');
+           $response->setJsonContent(
+               [
+                   'status'   => 'ERROR',
+                   'messages' => 'Servicio no es post',
+               ]
+           );
+           return $response;
+        }
+        $json = $this->request->getJsonRawBody();  
+        if (!$this->validar_logueo($json->correo , $json->token)){
+           // Cambiar el HTTP status
+           $response->setStatusCode(409, 'Conflict');
+           $response->setJsonContent(
+               [
+                   'status'   => 'ERROR',
+                   'messages' => 'Usuario no ha sido autenticado',
+               ]
+           );
+           return $response;
+       }
+
+       $jerarquia = ean\cc\Jerarquia::findFirst(['idJerarquia = :Jerarquia:',
+       'bind' => [ 'Jerarquia' => $json->idJerarquia ],]);    
+
+       if( $jerarquia === false ){
+        $response->setStatusCode(409, 'Conflict');
+        $response->setJsonContent(
+            [
+                'status'   => 'ERROR',
+                'messages' => 'Debe enviar id Jerarquia correcto',
+            ]
+        );
+        return $response;           
+       }
+
+       if( isset( $json->nombre ) ){
+        $jerarquia->nombre = $json->nombre;
+       }     
+
+       if ( $jerarquia->update() === false ) {
+        $response->setStatusCode(409, 'Conflict');
+        $response->setJsonContent(
+            [
+                'status'   => 'ERROR',
+                'messages' => 'Id de jerarquia no existe',
+            ]
+        );           
+       } else {
+        $response->setJsonContent(
+            [
+                'status'   => 'OK',
+                'messages' => 'Nombre de jerarquia modificado',
+            ]
+        );   
+       }
+
+       return $response;  
+
+    }
+
+    public function borrar_jerarquia(){
+        // Crear una respuesta
+        $response = new Response();
+        if ( ! $this->request->isPost()) {
+           $response->setStatusCode(409, 'Conflict');
+           $response->setJsonContent(
+               [
+                   'status'   => 'ERROR',
+                   'messages' => 'Servicio no es post',
+               ]
+           );
+           return $response;
+        }
+        $json = $this->request->getJsonRawBody();  
+        if (!$this->validar_logueo($json->correo , $json->token)){
+           // Cambiar el HTTP status
+           $response->setStatusCode(409, 'Conflict');
+           $response->setJsonContent(
+               [
+                   'status'   => 'ERROR',
+                   'messages' => 'Usuario no ha sido autenticado',
+               ]
+           );
+           return $response;
+       }
+
+       $jerarquia = ean\cc\Jerarquia::findFirst(['idJerarquia = :Jerarquia:',
+       'bind' => [ 'Jerarquia' => $json->idJerarquia ],]);    
+
+       if( $jerarquia === false ){
+        $response->setStatusCode(409, 'Conflict');
+        $response->setJsonContent(
+            [
+                'status'   => 'ERROR',
+                'messages' => 'Debe enviar id Jerarquia correcto',
+            ]
+        );
+        return $response;           
+       }
+
+       $jerInferiores = ean\cc\Jerarquia::findFirst(['jerarquiaSuperior = :Jer: and eliminado is NULL ',
+       'bind' => [ 'Jer' => $json->idJerarquia ],]);
+       if( ! $jerInferiores === false ){
+        $response->setStatusCode(409, 'Conflict');
+        $response->setJsonContent(
+            [
+                'status'   => 'ERROR',
+                'messages' => 'Jerarquía ya contiene jerarquias inferiores activas',
+            ]
+        );
+        return $response;     
+       }           
+
+       if($jerarquia->eliminado === null ){
+        $jerarquia->eliminado = 'X';
+       } else {
+        $jerarquia->eliminado = null ;   
+       }
+       
+       $jerarquia->update();
+       $response->setJsonContent(
+            [
+                'status'   => 'OK',
+                'messages' => 'Jerarquia eliminada id:'.$json->idJerarquia,
+            ]
+        );   
+
+       return $response;  
+
+    }
+
+    public function crear_unidad(){
+        // Crear una respuesta
+        $response = new Response();
+        if ( ! $this->request->isPost()) {
+           $response->setStatusCode(409, 'Conflict');
+           $response->setJsonContent(
+               [
+                   'status'   => 'ERROR',
+                   'messages' => 'Servicio no es post',
+               ]
+           );
+           return $response;
+        }
+        $json = $this->request->getJsonRawBody();  
+        if (!$this->validar_logueo($json->correo , $json->token)){
+           // Cambiar el HTTP status
+           $response->setStatusCode(409, 'Conflict');
+           $response->setJsonContent(
+               [
+                   'status'   => 'ERROR',
+                   'messages' => 'Usuario no ha sido autenticado',
+               ]
+           );
+           return $response;
+       }
+       
+       $unidad = new ean\cc\Unidad();    
+       $unidad->nombre = $json->nombre;
+       $unidad->justificacion = $json->justificacion;
+       $unidad->tipo   = $json->tipo;
+       $unidad->creditos = $json->creditos;
+       $unidad->nivel = $json->nivel;
+       $unidad->codigosSap = $json->codigosSap;
+
+       $jerarquia = ean\cc\Jerarquia::findFirst(['idJerarquia = :Jerarquia:',
+       'bind' => [ 'Jerarquia' => $json->idJerarquia ],]);  
+       if( $jerarquia === false ){
+        $response->setStatusCode(409, 'Conflict');
+        $response->setJsonContent(
+            [
+                'status'   => 'ERROR',
+                'messages' => 'Debe enviar id Jerarquia correcto',
+            ]
+        );
+        return $response;           
+       }       
+
+       if ($unidad->create() === false) {
+           $response->setStatusCode(409, 'Conflict');
+           $response->setJsonContent(
+               [
+                   'status'   => 'ERROR',
+                   'messages' => 'No se ha podido grabar la unidad',
+                   'unidad'   => $unidad,
+               ]
+           );  
+       } else {
+           $response->setJsonContent(
+               [
+                   'status'   => 'OK',
+                   'messages' => 'Se registro correctamente la unidad',
+                   'jerarquia' => $unidad,
+               ]
+           );              
+       }
+
+       return $response; 
+       
+   }
+
 }
 
