@@ -114,7 +114,15 @@ class AdministracionController extends ControllerBase
             return $response;
         }
 
-        if( $jerarquia->jerarquiaSuperior == null ){
+        $response->setJsonContent(
+            [
+                'status'   => 'prueba',
+                'messages' => $jerarquia,
+            ]
+        );
+        return $response;       
+
+        if( $jerarquia->jerarquiaSuperior === null ){
             $rp_jerarquias = ean\cc\Jerarquia::find( );
         }else{
             $rp_jerarquias = ean\cc\Jerarquia::find(['jerarquiaSuperior = :Jerarquia:',
