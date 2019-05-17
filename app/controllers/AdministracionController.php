@@ -118,7 +118,7 @@ class AdministracionController extends ControllerBase
             $rp_jerarquias = ean\cc\Jerarquia::find( );
         }else{
             $rp_jerarquias = ean\cc\Jerarquia::find(['jerarquiaSuperior = :Jerarquia:',
-            'bind' => [ 'Jerarquia' => $jerarquia->idJerarquia ],]);
+            'bind' => [ 'Jerarquia' => $jerarquia['idJerarquia'] ],]);
         }
 
         $response->setJsonContent(
