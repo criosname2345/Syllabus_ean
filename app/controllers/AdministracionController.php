@@ -103,6 +103,17 @@ class AdministracionController extends ControllerBase
 
         $rp_jerarquias = array();
 
+        if($jerarquia === false ){
+            $response->setStatusCode(409, 'Conflict');
+            $response->setJsonContent(
+                [
+                    'status'   => 'ERROR',
+                    'messages' => 'No se encuentra jerarquia del usuario',
+                ]
+            );
+            return $response;
+        }
+
         if( $jerarquia->jerarquiaSuperior == null ){
             $rp_jerarquias = ean\cc\Jerarquia::find( );
         }else{
@@ -237,7 +248,19 @@ class AdministracionController extends ControllerBase
             ]
         );
         return $response;     
-       }           
+       }
+       $unidadAd = ean\cc\Unidad::findFirst(['idJerarquia = :Jer: and eliminado is NULL ',
+       'bind' => [ 'Jer' => $jerarquia->idJerarquia ],]);         
+       if( ! $unidadAd === false ){
+        $response->setStatusCode(409, 'Conflict');
+        $response->setJsonContent(
+            [
+                'status'   => 'ERROR',
+                'messages' => 'Jerarquía ya contiene unidades activas adscritas',
+            ]
+        );
+        return $response;     
+       }
 
        if($jerarquia->eliminado === null ){
         $jerarquia->eliminado = 'X';
@@ -302,7 +325,8 @@ class AdministracionController extends ControllerBase
             ]
         );
         return $response;           
-       }       
+       }
+       $unidad->idJerarquia = $jerarquia->idJerarquia;
 
        if ($unidad->create() === false) {
            $response->setStatusCode(409, 'Conflict');
@@ -326,6 +350,67 @@ class AdministracionController extends ControllerBase
        return $response; 
        
    }
+
+   public function listar_unidades(){
+        // Crear una respuesta
+        $response = new Response();
+        if ( ! $this->request->isPost()) {
+        $response->setStatusCode(409, 'Conflict');
+        $response->setJsonContent(
+            [
+                'status'   => 'ERROR',
+                'messages' => 'Servicio no es post',
+            ]
+        );
+        return $response;
+        }
+        $json = $this->request->getJsonRawBody();  
+        if (!$this->validar_logueo($json->correo , $json->token)){
+        // Cambiar el HTTP status
+        $response->setStatusCode(409, 'Conflict');
+        $response->setJsonContent(
+            [
+                'status'   => 'ERROR',
+                'messages' => 'Usuario no ha sido autenticado',
+            ]
+        );
+        return $response;
+    }
+
+    $usuario = $this->session->get('usuario');
+    $jerarquia = ean\cc\Jerarquia::find(['idJerarquia = :Jerarquia:',
+    'bind' => [ 'Jerarquia' => $usuario['idJerarquia'] ],]);
+
+    if($jerarquia === false ){
+        $response->setStatusCode(409, 'Conflict');
+        $response->setJsonContent(
+            [
+                'status'   => 'ERROR',
+                'messages' => 'No se encuentra jerarquia del usuario',
+            ]
+        );
+        return $response;
+    }
+
+    $rp_jerarquias = array();
+
+    if( $jerarquia->jerarquiaSuperior == null ){
+        $rp_jerarquias = ean\cc\Jerarquia::find( );
+    }else{
+        $rp_jerarquias = ean\cc\Jerarquia::find(['jerarquiaSuperior = :Jerarquia:',
+        'bind' => [ 'Jerarquia' => $jerarquia->idJerarquia ],]);
+    }
+
+    $response->setJsonContent(
+        [
+            'status'   => 'OK',
+            'messages' => 'Jerarquias del usuario',
+            'jerarquias' => $rp_jerarquias ,
+        ]
+    );
+    return $response;
+
+    }
 
 }
 
