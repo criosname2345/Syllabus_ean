@@ -117,7 +117,7 @@ class AdministracionController extends ControllerBase
         $response->setJsonContent(
             [
                 'status'   => 'prueba',
-                'messages' => $jerarquia,
+                'messages' => $jerarquia->jerarquiaSuperior,
             ]
         );
         return $response;       
