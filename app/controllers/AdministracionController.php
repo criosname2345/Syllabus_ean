@@ -114,7 +114,7 @@ class AdministracionController extends ControllerBase
             return $response;
         }    
 
-        if( $jerarquia['jerarquiaSuperior'] === null ){
+        if( $jerarquia['jerarquiaSuperior'] === false ){
             $rp_jerarquias = ean\cc\Jerarquia::find( );
         }else{
             $rp_jerarquias = ean\cc\Jerarquia::find(['jerarquiaSuperior = :Jerarquia:',
