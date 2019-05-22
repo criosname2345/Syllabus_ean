@@ -375,40 +375,67 @@ class AdministracionController extends ControllerBase
             ]
         );
         return $response;
-    }
+        }
 
-    $usuario = $this->session->get('usuario');
-    $jerarquia = ean\cc\Jerarquia::find(['idJerarquia = :Jerarquia:',
-    'bind' => [ 'Jerarquia' => $usuario['idJerarquia'] ],]);
+        $usuario = $this->session->get('usuario');
+        $jerarquia = ean\cc\Jerarquia::findFirst(['idJerarquia = :Jerarquia:',
+        'bind' => [ 'Jerarquia' => $usuario['idJerarquia'] ],]);
 
-    if($jerarquia === false ){
-        $response->setStatusCode(409, 'Conflict');
+        if($jerarquia === false ){
+            $response->setStatusCode(409, 'Conflict');
+            $response->setJsonContent(
+                [
+                    'status'   => 'ERROR',
+                    'messages' => 'No se encuentra jerarquia del usuario',
+                ]
+            );
+            return $response;
+        }
+
+        $rp_jerarquias = array();
+
+    // if( $jerarquia['tipo'] === 1 ){
+    //     $rp_jerarquias = ean\cc\Jerarquia::find( );
+    // }else{
+    //     $rp_jerarquias = ean\cc\Jerarquia::find(['jerarquiaSuperior = :Jerarquia:',
+    //     'bind' => [ 'Jerarquia' => $jerarquia->idJerarquia ],]);
+    // }
+
+        switch ( $jerarquia->tipo ) {
+            case 1:
+                $rp_jerarquias = ean\cc\Jerarquia::find( );
+                break;
+            case 2:
+                $ar_jerarquias = ean\cc\Jerarquia::find(['jerarquiaSuperior = :Jerarquia:',
+                'bind' => [ 'Jerarquia' => $jerarquia->idJerarquia ],]);
+                foreach($ar_jerarquias as $arjer){
+                    $rp_jerarquias[] = $arjer ;
+                }
+                $rp_jerarquias[] = $jerarquia ;
+                break;
+            case 3:
+                // echo "i es igual a 2";
+                break;
+        }
+
+        $rp_unidades = array();
+
+        foreach($rp_jerarquias as $jer_iter){
+            $unidades = ean\cc\Unidad::find( ['idJerarquia = :Jerarquia:',
+            'bind' => [ 'Jerarquia' => $jer_iter->idJerarquia ],] );
+            foreach($unidades as $und){
+                $rp_unidades[] = $und;
+            }
+        }
+
         $response->setJsonContent(
             [
-                'status'   => 'ERROR',
-                'messages' => 'No se encuentra jerarquia del usuario',
+                'status'   => 'OK',
+                'messages' => 'Unidades del usuario',
+                'jerarquias' => $rp_unidades ,
             ]
         );
         return $response;
-    }
-
-    $rp_jerarquias = array();
-
-    if( $jerarquia->jerarquiaSuperior == null ){
-        $rp_jerarquias = ean\cc\Jerarquia::find( );
-    }else{
-        $rp_jerarquias = ean\cc\Jerarquia::find(['jerarquiaSuperior = :Jerarquia:',
-        'bind' => [ 'Jerarquia' => $jerarquia->idJerarquia ],]);
-    }
-
-    $response->setJsonContent(
-        [
-            'status'   => 'OK',
-            'messages' => 'Jerarquias del usuario',
-            'jerarquias' => $rp_jerarquias ,
-        ]
-    );
-    return $response;
 
     }
 

@@ -25,4 +25,5 @@ $Administracion->post('/l_jerarquia', 'listar_jerarquias');
 $Administracion->post('/m_jerarquia', 'modificar_jerarquia');
 $Administracion->post('/b_jerarquia', 'borrar_jerarquia');
 $Administracion->post('/c_unidad', 'crear_unidad');
+$Administracion->post('/l_unidad', 'listar_unidades');
 $app->mount($Administracion);
