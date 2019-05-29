@@ -27,3 +27,10 @@ $Administracion->post('/b_jerarquia', 'borrar_jerarquia');
 $Administracion->post('/c_unidad', 'crear_unidad');
 $Administracion->post('/l_unidad', 'listar_unidades');
 $app->mount($Administracion);
+
+//Gestion de Syllabus de la universidad
+$Syllabus = new MicroCollection();
+$Syllabus->setHandler('SyllabusController', true);
+$Syllabus->setPrefix('/syl');
+$Syllabus->post('/c_syl', 'crear_cab_syllabus');
+$app->mount($Syllabus);
