@@ -104,5 +104,89 @@ class SyllabusController extends ControllerBase
 
     }
 
+    public function crear_det_syllabus(){
+         // Crear una respuesta
+         $response = new Response();
+         if ( ! $this->request->isPost()) {
+         $response->setStatusCode(409, 'Conflict');
+         $response->setJsonContent(
+             [
+                 'status'   => 'ERROR',
+                 'messages' => 'Servicio no es post',
+             ]
+         );
+         return $response;
+         }
+         $json = $this->request->getJsonRawBody();  
+         if (!$this->validar_logueo($json->correo , $json->token)){
+         // Cambiar el HTTP status
+         $response->setStatusCode(409, 'Conflict');
+         $response->setJsonContent(
+             [
+                 'status'   => 'ERROR',
+                 'messages' => 'Usuario no ha sido autenticado',
+             ]
+         );
+         return $response;
+         }
+         
+        $usuario = $this->session->get('usuario');
+
+        $sylcab = ean\cc\Syllabuscab::findFirst(['idSyllabuscab = :syl:',
+        'bind' => [ 'syl' => $json->idSyllabusCab ],]);
+
+        if($sylcab === false){
+            $response->setStatusCode(409, 'Conflict');
+            $response->setJsonContent(
+                [
+                    'status'   => 'ERROR',
+                    'messages' => 'No existe syllabus con ID'.$json->idSyllabusCab ,
+                ]
+            );
+            return $response;
+        }
+
+        $detalle = new ean\cc\Detallesyllabus();
+        $detalle->creacion = date("Y-m-d"); 
+        $detalle->modalidad = $json->modalidad;
+        $detalle->duracion = $json->duracion;
+        $detalle->proposito = $json->proposito;
+        $detalle->metodologia = $json->metodologia;
+        $detalle->resumenContenidos = $json->resumenContenidos;
+        $detalle->evaluacion  = $json->evaluacion;
+        $detalle->bibliografia = $json->bibliografia;
+        $detalle->enlacesWeb = $json->enlacesWeb;
+        $detalle->lengua  = $json->lengua;
+        $detalle->prLengua = $json->prLengua;
+        $detalle->obsVersion = "Creado";
+        $detalle->version = 1;
+        $detalle->idSyllabusCab = $sylcab->idSyllabusCab ;
+        $detalle->autorDetalle = $usuario['id'];
+
+        if ($detalle->create() === false) {
+            $response->setStatusCode(409, 'Conflict');
+            $response->setJsonContent(
+                [
+                    'status'   => 'ERROR',
+                    'messages' => 'No se ha podido grabar el detalle del syllabus',
+                    'Detalle'   => $detalle,
+                ]
+            );           
+        }else{
+            $response->setJsonContent(
+                [
+                    'status'   => 'OK',
+                    'messages' => 'Se registro correctamente el detalle del Syllabus',
+                    'Detalle'   => $detalle,
+                ]
+            );   
+            $sylcab->versionActual = $detalle->idDetalle;
+            $sylcab->save();
+        }     
+        
+        return $response;          
+
+    }
+
 }
 
