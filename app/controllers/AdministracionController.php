@@ -421,7 +421,7 @@ class AdministracionController extends ControllerBase
         $rp_unidades = array();
 
         foreach($rp_jerarquias as $jer_iter){
-            $unidades = ean\cc\Unidad::find( ['idJerarquia = :Jerarquia:',
+            $unidades = ean\cc\Unidad::find( ['idJerarquia = :Jerarquia:', 
             'bind' => [ 'Jerarquia' => $jer_iter->idJerarquia ],] );
             foreach($unidades as $und){
                 $rp_unidades[] = $und;
@@ -440,7 +440,7 @@ class AdministracionController extends ControllerBase
     }
 
     public function modificar_unidad(){
-        
+            
     }
 
 }

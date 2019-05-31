@@ -28,7 +28,7 @@ $Administracion->post('/c_unidad', 'crear_unidad');
 $Administracion->post('/l_unidad', 'listar_unidades');
 $app->mount($Administracion);
 
-//Gestion de Syllabus de la universidad
+//Gestion de Syllabus de la universidad ean
 $Syllabus = new MicroCollection();
 $Syllabus->setHandler('SyllabusController', true);
 $Syllabus->setPrefix('/syl');

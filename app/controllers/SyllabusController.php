@@ -171,7 +171,7 @@ class SyllabusController extends ControllerBase
                     'messages' => 'No se ha podido grabar el detalle del syllabus',
                     'Detalle'   => $detalle,
                 ]
-            );           
+            );              
         }else{
             $response->setJsonContent(
                 [
