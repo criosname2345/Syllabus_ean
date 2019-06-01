@@ -29,8 +29,9 @@ $Administracion->post('/l_unidad', 'listar_unidades');
 $app->mount($Administracion);
 
 //Gestion de Syllabus de la universidad ean
-$Syllabus = new MicroCollection(); //
-$Syllabus->setHandler('SyllabusController', true); //
-$Syllabus->setPrefix('/syl'); //
-$Syllabus->post('/c_syl', 'crear_cab_syllabus'); //
-$app->mount($Syllabus);   //
+$Syllabus = new MicroCollection(); 
+$Syllabus->setHandler('SyllabusController', true); 
+$Syllabus->setPrefix('/syl'); 
+$Syllabus->post('/c_syl', 'crear_cab_syllabus');
+$Syllabus->post('/c_det_syl', 'crear_det_syllabus');
+$app->mount($Syllabus);   

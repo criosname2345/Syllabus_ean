@@ -132,7 +132,7 @@ class SyllabusController extends ControllerBase
          
         $usuario = $this->session->get('usuario');
 
-        $sylcab = ean\cc\Syllabuscab::findFirst(['idSyllabuscab = :syl:',
+        $sylcab = ean\cc\Syllabuscab::findFirst(['idSyllabusCab = :syl:',
         'bind' => [ 'syl' => $json->idSyllabusCab ],]);
 
         if($sylcab === false){
@@ -141,6 +141,17 @@ class SyllabusController extends ControllerBase
                 [
                     'status'   => 'ERROR',
                     'messages' => 'No existe syllabus con ID'.$json->idSyllabusCab ,
+                ]
+            );
+            return $response;
+        }
+
+        if($sylcab->status === 0 || $sylcab->status === 1 ){
+            $response->setStatusCode(409, 'Conflict');
+            $response->setJsonContent(
+                [
+                    'status'   => 'ERROR',
+                    'messages' => 'Status borrado o paso a revision, no puede crear otra versión' ,
                 ]
             );
             return $response;
@@ -168,7 +179,7 @@ class SyllabusController extends ControllerBase
             $response->setJsonContent(
                 [
                     'status'   => 'ERROR',
-                    'messages' => 'No se ha podido grabar el detalle del syllabus',
+                    'messages' => 'No se ha podido grabar el detalle del Syllabus',
                     'Detalle'   => $detalle,
                 ]
             );              
