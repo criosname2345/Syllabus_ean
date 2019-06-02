@@ -36,7 +36,6 @@ class ControllerBase extends Controller
     public function obt_jerarquias(){
 
         $rp_jerarquias = array();
-        $arr_jer_aux = array();
 
         $usuario = $this->session->get('usuario');
         $jerarquia = ean\cc\Jerarquia::findFirst(['idJerarquia = :Jerarquia:',
@@ -58,6 +57,7 @@ class ControllerBase extends Controller
 
         while( $jer_ini > 0 ){  
             unset($arr_jer_aux); 
+            $arr_jer_aux = array();
             foreach($ar_jerarquias as $arjer){
                 $rp_jerarquias[] = $arjer ; // Se agregan todas las jeraquias inferiores
                 //Se buscan si estas jerarquias inferiores tienen mas jerarquias inferiores
@@ -68,7 +68,7 @@ class ControllerBase extends Controller
                     $arr_jer_aux[] = $jeraux;
                 }
             }
-            $jer_ini = count($arr_jer_aux);
+            $jer_ini = count( $arr_jer_aux );
             if($jer_ini > 0){
                 $ar_jerarquias = $arr_jer_aux;
             }
