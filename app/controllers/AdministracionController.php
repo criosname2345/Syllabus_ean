@@ -97,29 +97,30 @@ class AdministracionController extends ControllerBase
             return $response;
         }
 
-        $usuario = $this->session->get('usuario');
-        $jerarquia = ean\cc\Jerarquia::find(['idJerarquia = :Jerarquia:',
-        'bind' => [ 'Jerarquia' => $usuario['idJerarquia'] ],]);
+        // $usuario = $this->session->get('usuario');
+        // $jerarquia = ean\cc\Jerarquia::find(['idJerarquia = :Jerarquia:',
+        // 'bind' => [ 'Jerarquia' => $usuario['idJerarquia'] ],]);
 
         $rp_jerarquias = array();
+        $rp_jerarquias = $this->obt_jerarquias();
 
-        if($jerarquia === false ){
-            $response->setStatusCode(409, 'Conflict');
-            $response->setJsonContent(
-                [
-                    'status'   => 'ERROR',
-                    'messages' => 'No se encuentra jerarquia del usuario',
-                ]
-            );
-            return $response;
-        }    
+        // if($jerarquia === false ){
+        //     $response->setStatusCode(409, 'Conflict');
+        //     $response->setJsonContent(
+        //         [
+        //             'status'   => 'ERROR',
+        //             'messages' => 'No se encuentra jerarquia del usuario',
+        //         ]
+        //     );
+        //     return $response;
+        // }    
 
-        if( $jerarquia->jerarquiaSuperior === false ){
-            $rp_jerarquias = ean\cc\Jerarquia::find( );
-        }else{
-            $rp_jerarquias = ean\cc\Jerarquia::find(['jerarquiaSuperior = :Jerarquia:',
-            'bind' => [ 'Jerarquia' => $jerarquia->idJerarquia ],]);
-        }
+        // if( $jerarquia->jerarquiaSuperior === false ){
+        //     $rp_jerarquias = ean\cc\Jerarquia::find( );
+        // }else{
+        //     $rp_jerarquias = ean\cc\Jerarquia::find(['jerarquiaSuperior = :Jerarquia:',
+        //     'bind' => [ 'Jerarquia' => $jerarquia->idJerarquia ],]);
+        // }
 
         $response->setJsonContent(
             [
