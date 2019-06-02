@@ -104,6 +104,65 @@ class SyllabusController extends ControllerBase
 
     }
 
+    public function listar_syllabus_per(){
+        // Crear una respuesta
+        $response = new Response();
+        if ( ! $this->request->isPost()) {
+        $response->setStatusCode(409, 'Conflict');
+        $response->setJsonContent(
+            [
+                'status'   => 'ERROR',
+                'messages' => 'Servicio no es post',
+            ]
+        );
+        return $response;
+        }
+        $json = $this->request->getJsonRawBody();  
+        if (!$this->validar_logueo($json->correo , $json->token)){
+        // Cambiar el HTTP status
+        $response->setStatusCode(409, 'Conflict');
+        $response->setJsonContent(
+            [
+                'status'   => 'ERROR',
+                'messages' => 'Usuario no ha sido autenticado',
+            ]
+        );
+        return $response;
+        }
+
+        $rp_syllabus = array();
+        $jerarquias = $this->obt_jerarquias();
+
+        $rp_unidades = array();
+        $ar_syllabus = array();
+
+        foreach($jerarquias as $jer_iter){
+        $unidades = ean\cc\Unidad::find( ['idJerarquia = :Jerarquia:', 
+        'bind' => [ 'Jerarquia' => $jer_iter->idJerarquia ],] );
+            foreach($unidades as $und){
+                $rp_unidades[] = $und;
+            }
+        }
+
+        foreach($unidades as $unidad){
+            if($unidad->idSyllabusCab != false && $unidad->eliminado === null ){
+                $ar_syllabus[] = ean\cc\Syllabuscab::findFirst( ['idSyllabusCab = :syl:', 
+                'bind' => [ 'syl' => $unidad->idSyllabusCab ],] );    
+            }        
+        }
+
+        $response->setJsonContent(
+            [
+                'status'   => 'ERROR',
+                'messages' => 'jer',
+                'Jerarquias'   => $ar_syllabus,
+            ]
+        ); 
+
+        return $response;
+
+    }
+
     public function crear_det_syllabus(){
          // Crear una respuesta
          $response = new Response();

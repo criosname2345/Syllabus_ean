@@ -114,11 +114,11 @@ class AdministracionController extends ControllerBase
             return $response;
         }    
 
-        if( $jerarquia['jerarquiaSuperior'] === false ){
+        if( $jerarquia->jerarquiaSuperior === false ){
             $rp_jerarquias = ean\cc\Jerarquia::find( );
         }else{
             $rp_jerarquias = ean\cc\Jerarquia::find(['jerarquiaSuperior = :Jerarquia:',
-            'bind' => [ 'Jerarquia' => $jerarquia['idJerarquia'] ],]);
+            'bind' => [ 'Jerarquia' => $jerarquia->idJerarquia ],]);
         }
 
         $response->setJsonContent(
@@ -377,11 +377,13 @@ class AdministracionController extends ControllerBase
         return $response;
         }
 
-        $usuario = $this->session->get('usuario');
-        $jerarquia = ean\cc\Jerarquia::findFirst(['idJerarquia = :Jerarquia:',
-        'bind' => [ 'Jerarquia' => $usuario['idJerarquia'] ],]);
+        // $usuario = $this->session->get('usuario');
+        // $jerarquia = ean\cc\Jerarquia::findFirst(['idJerarquia = :Jerarquia:',
+        // 'bind' => [ 'Jerarquia' => $usuario['idJerarquia'] ],]);
+        $rp_jerarquias = array();
+        $rp_jerarquias = $this->obt_jerarquias();
 
-        if($jerarquia === false ){
+        if($rp_jerarquias === false ){
             $response->setStatusCode(409, 'Conflict');
             $response->setJsonContent(
                 [
@@ -392,31 +394,22 @@ class AdministracionController extends ControllerBase
             return $response;
         }
 
-        $rp_jerarquias = array();
-
-    // if( $jerarquia['tipo'] === 1 ){
-    //     $rp_jerarquias = ean\cc\Jerarquia::find( );
-    // }else{
-    //     $rp_jerarquias = ean\cc\Jerarquia::find(['jerarquiaSuperior = :Jerarquia:',
-    //     'bind' => [ 'Jerarquia' => $jerarquia->idJerarquia ],]);
-    // }
-
-        switch ( $jerarquia->tipo ) {
-            case 1:
-                $rp_jerarquias = ean\cc\Jerarquia::find( );
-                break;
-            case 2:
-                $ar_jerarquias = ean\cc\Jerarquia::find(['jerarquiaSuperior = :Jerarquia:',
-                'bind' => [ 'Jerarquia' => $jerarquia->idJerarquia ],]);
-                foreach($ar_jerarquias as $arjer){
-                    $rp_jerarquias[] = $arjer ;
-                }
-                $rp_jerarquias[] = $jerarquia ;
-                break;
-            case 3:
-                // echo "i es igual a 2";
-                break;
-        }
+        // switch ( $jerarquia->tipo ) {
+        //     case 1:
+        //         $rp_jerarquias = ean\cc\Jerarquia::find( );
+        //         break;
+        //     case 2:
+        //         $ar_jerarquias = ean\cc\Jerarquia::find(['jerarquiaSuperior = :Jerarquia:',
+        //         'bind' => [ 'Jerarquia' => $jerarquia->idJerarquia ],]);
+        //         foreach($ar_jerarquias as $arjer){
+        //             $rp_jerarquias[] = $arjer ;
+        //         }
+        //         $rp_jerarquias[] = $jerarquia ;
+        //         break;
+        //     case 3:
+        //         // echo "i es igual a 2";
+        //         break;
+        // }
 
         $rp_unidades = array();
 

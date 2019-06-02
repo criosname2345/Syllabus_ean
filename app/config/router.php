@@ -34,4 +34,5 @@ $Syllabus->setHandler('SyllabusController', true);
 $Syllabus->setPrefix('/syl'); 
 $Syllabus->post('/c_syl', 'crear_cab_syllabus');
 $Syllabus->post('/c_det_syl', 'crear_det_syllabus');
+$Syllabus->post('/l_syl', 'listar_syllabus_per');
 $app->mount($Syllabus);   
