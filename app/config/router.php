@@ -36,3 +36,10 @@ $Syllabus->post('/c_syl', 'crear_cab_syllabus');
 $Syllabus->post('/c_det_syl', 'crear_det_syllabus');
 $Syllabus->post('/l_syl', 'listar_syllabus_per');
 $app->mount($Syllabus);   
+
+//Gestion de sesiones 
+$Sesiones = new MicroCollection(); 
+$Sesiones->setHandler('SesionesController', true); 
+$Sesiones->setPrefix('/ses'); 
+$Sesiones->post('/a_ses', 'agregar_sesion');
+$app->mount($Sesiones);   
