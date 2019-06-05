@@ -144,18 +144,8 @@ class SyllabusController extends ControllerBase
             }
         }
 
-        $response->setJsonContent(
-            [
-                'status'   => 'ERROR',
-                'messages' => 'Listado de Syllabus',
-                'Syllabus'   => $rp_unidades,
-            ]
-        ); 
-
-        return $response;
-
         foreach($unidades as $unidad){
-            if($unidad->idSyllabusCab != false && $unidad->eliminado === null ){
+            if($unidad->eliminado === null ){
                 $ar_syllabus[] = ean\cc\Syllabuscab::findFirst( ['idSyllabusCab = :syl:', 
                 'bind' => [ 'syl' => $unidad->idSyllabusCab ],] );    
             }        
