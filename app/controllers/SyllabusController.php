@@ -154,7 +154,7 @@ class SyllabusController extends ControllerBase
         $response->setJsonContent(
             [
                 'status'   => 'ERROR',
-                'messages' => 'jer',
+                'messages' => 'Listado de Jerarquias',
                 'Jerarquias'   => $ar_syllabus,
             ]
         ); 
