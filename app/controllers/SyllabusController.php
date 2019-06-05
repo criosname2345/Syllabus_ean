@@ -133,16 +133,6 @@ class SyllabusController extends ControllerBase
         $rp_syllabus = array();
         $jerarquias = $this->obt_jerarquias();
 
-        $response->setJsonContent(
-            [
-                'status'   => 'ERROR',
-                'messages' => 'Listado de Jerarquias',
-                'Jerarquias'   => $jerarquias,
-            ]
-        ); 
-
-        return $response;
-
         $rp_unidades = array();
         $ar_syllabus = array();
 
@@ -153,6 +143,16 @@ class SyllabusController extends ControllerBase
                 $rp_unidades[] = $und;
             }
         }
+
+        $response->setJsonContent(
+            [
+                'status'   => 'ERROR',
+                'messages' => 'Listado de Syllabus',
+                'Syllabus'   => $rp_unidades,
+            ]
+        ); 
+
+        return $response;
 
         foreach($unidades as $unidad){
             if($unidad->idSyllabusCab != false && $unidad->eliminado === null ){
