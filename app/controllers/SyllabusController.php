@@ -137,7 +137,7 @@ class SyllabusController extends ControllerBase
             [
                 'status'   => 'ERROR',
                 'messages' => 'Listado de Jerarquias',
-                'Jerarquias'   => $ar_syllabus,
+                'Jerarquias'   => $jerarquias,
             ]
         ); 
 
